@@ -1,0 +1,30 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+}
+
+plugins {
+	id "org.jetbrains.intellij" version "0.1.10"
+}
+
+apply plugin: 'idea'
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'java'
+
+intellij {
+	version 'IC-2017.2'
+	plugins 'properties'
+	pluginName 'stagemonitor'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group 'org.stagemonitor'
+version '1.0' // Plugin version
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2'
+}
+
