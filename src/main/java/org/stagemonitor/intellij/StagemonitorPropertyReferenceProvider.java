@@ -1,4 +1,4 @@
-package org.stagemonitor;
+package org.stagemonitor.intellij;
 
 import com.intellij.lang.properties.psi.impl.PropertyKeyImpl;
 import com.intellij.psi.PsiElement;

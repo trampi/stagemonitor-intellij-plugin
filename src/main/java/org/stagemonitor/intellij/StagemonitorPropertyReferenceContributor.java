@@ -1,4 +1,4 @@
-package org.stagemonitor;
+package org.stagemonitor.intellij;
 
 import com.intellij.lang.properties.parsing.PropertiesTokenTypes;
 import com.intellij.patterns.PlatformPatterns;

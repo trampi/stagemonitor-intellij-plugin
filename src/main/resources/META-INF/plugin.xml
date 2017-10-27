@@ -1,22 +1,22 @@
 <idea-plugin>
-	<id>com.your.company.unique.plugin.id</id>
-	<name>Plugin display name here</name>
+	<id>org.stagemonitor.intellij</id>
+	<name>stagemonitor Plugin</name>
 	<version>1.0</version>
-	<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+	<vendor email="stagemonitor-support@isys.de" url="http://www.stagemonitor.org">iSYS Software GmbH</vendor>
 
 	<description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      This plugin enables auto completion of <a href="https://github.com/stagemonitor/stagemonitor/wiki/Configuration-Options">stagemonitor configuration options</a>.
+      The project is scanned for all implementations of ConfigurationOptionProvider.
+      All ConfigurationOption-fields in those classes are then used for auto completion.
     ]]></description>
 
 	<change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      Initial release
     ]]>
 	</change-notes>
 
 	<!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-	<idea-version since-build="145.0"/>
+	<idea-version since-build="171"/>
 
 
 	<!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -30,7 +30,7 @@
 
 		<completion.contributor id="stagemonitorCompletionContributor"
 								language="Properties"
-								implementationClass="org.stagemonitor.StagemonitorCompletionContributor"/>
+								implementationClass="org.stagemonitor.intellij.StagemonitorCompletionContributor"/>
 
 		<!--
 		 reference contributor deactivated: it overrides the documentation provider, so that the documentation
@@ -38,10 +38,10 @@
 		<!--
 		<psi.referenceContributor id="stagemonitorPropertyReferenceContributor"
 								  language="Properties"
-								  implementation="org.stagemonitor.StagemonitorPropertyReferenceContributor" />
+								  implementation="StagemonitorPropertyReferenceContributor" />
 	  	-->
 
-		<lang.documentationProvider implementationClass="org.stagemonitor.StagemonitorDocumentationProvider"
+		<lang.documentationProvider implementationClass="org.stagemonitor.intellij.StagemonitorDocumentationProvider"
 									language="Properties"
 									id="stagemonitorDocumentationProvider"
 									order="first"/>

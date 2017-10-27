@@ -1,4 +1,4 @@
-package org.stagemonitor;
+package org.stagemonitor.intellij;
 
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;

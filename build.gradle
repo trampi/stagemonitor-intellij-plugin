@@ -15,7 +15,7 @@ apply plugin: 'java'
 intellij {
 	version 'IC-2017.2'
 	plugins 'properties'
-	pluginName 'stagemonitor'
+	pluginName 'stagemonitor Plugin'
 }
 
 sourceCompatibility = 1.8
@@ -27,4 +27,3 @@ version '1.0' // Plugin version
 task wrapper(type: Wrapper) {
     gradleVersion = '4.2'
 }
-

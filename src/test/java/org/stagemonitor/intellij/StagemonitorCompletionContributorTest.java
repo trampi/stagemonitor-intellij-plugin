@@ -1,4 +1,4 @@
-package org.stagemonitor;
+package org.stagemonitor.intellij;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
