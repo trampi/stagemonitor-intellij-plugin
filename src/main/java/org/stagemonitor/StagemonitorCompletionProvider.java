@@ -3,6 +3,8 @@ package org.stagemonitor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.diagnostic.ControlFlowException;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -17,11 +19,15 @@ import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiParenthesizedExpression;
 import com.intellij.psi.PsiPolyadicExpression;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiSubstitutor;
+import com.intellij.psi.impl.light.LightMemberReference;
 import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.util.ProcessingContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -41,13 +47,33 @@ public class StagemonitorCompletionProvider extends CompletionProvider<Completio
 	protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
 		try {
 			if (parameters.getPosition().getContainingFile().getName().equals("stagemonitor.properties")) {
-				for (PsiClass psiClass : getAllConfigurationClasses()) {
-					searchConfigurationOptions(psiClass);
+				List<ConfigurationOptionDescription> optionDescriptionList = getAllConfigurationOptions();
+
+				for (ConfigurationOptionDescription configurationOptionDescription : optionDescriptionList) {
+					if (!StringUtils.isEmpty(configurationOptionDescription.key)) {
+						result.addElement(
+								LookupElementBuilder.create(configurationOptionDescription.key)
+										.withTypeText(configurationOptionDescription.file)
+						);
+					}
 				}
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			if (e instanceof ControlFlowException) {
+				throw e;
+			} else {
+				LOG.error(e);
+			}
 		}
+	}
+
+	@NotNull
+	List<ConfigurationOptionDescription> getAllConfigurationOptions() {
+		List<ConfigurationOptionDescription> optionDescriptionList = new ArrayList<>();
+		for (PsiClass psiClass : getAllConfigurationClasses()) {
+			optionDescriptionList.addAll(searchConfigurationOptions(psiClass));
+		}
+		return optionDescriptionList;
 	}
 
 	List<ConfigurationOptionDescription> searchConfigurationOptions(PsiClass psiClass) {
@@ -60,6 +86,8 @@ public class StagemonitorCompletionProvider extends CompletionProvider<Completio
 			if (configurationOptionCanonicalTypes.contains(canonicalTypeWithoutGenerics(psiField)) && initializer != null) {
 				ConfigurationOptionDescriptionResolver configurationOptionDescriptionResolver = new ConfigurationOptionDescriptionResolver();
 				configurationOptionDescriptionResolver.visitElement(psiField);
+				configurationOptionDescriptionResolver.result.file = psiClass.getContainingFile().getName();
+				configurationOptionDescriptionResolver.result.methodReference = new LightMemberReference(psiField.getManager(), psiField, PsiSubstitutor.EMPTY);
 				optionDescriptionList.add(configurationOptionDescriptionResolver.result);
 			}
 		}
@@ -104,8 +132,10 @@ public class StagemonitorCompletionProvider extends CompletionProvider<Completio
 				} else if (identifier.getText().equals("key")) {
 					PsiExpression argumentExpression = expression.getArgumentList().getExpressions()[0];
 					result.key = reduceExpression(argumentExpression);
+				} else if (identifier.getText().equals("label")) {
+					PsiExpression argumentExpression = expression.getArgumentList().getExpressions()[0];
+					result.label = reduceExpression(argumentExpression);
 				}
-
 			} else {
 				LOG.warn("unknown expression type encountered: " + possibleIdentifier);
 			}
@@ -136,18 +166,32 @@ public class StagemonitorCompletionProvider extends CompletionProvider<Completio
 
 	}
 
-	public static class ConfigurationOptionDescription {
+	static class ConfigurationOptionDescription {
 		private String key;
 		private String description;
+		private String file;
+		private String label;
+		private PsiReference methodReference;
 
-		public String getKey() {
+		String getKey() {
 			return key;
 		}
 
-		public String getDescription() {
+		String getDescription() {
 			return description;
 		}
-	}
 
+		String getFile() {
+			return file;
+		}
+
+		PsiReference getMethodReference() {
+			return methodReference;
+		}
+
+		String getLabel() {
+			return label;
+		}
+	}
 
 }

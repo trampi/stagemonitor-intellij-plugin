@@ -4,8 +4,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 
-import org.junit.Test;
-
 import java.util.List;
 
 public class StagemonitorCompletionContributorTest extends LightCodeInsightFixtureTestCase {
@@ -22,9 +20,10 @@ public class StagemonitorCompletionContributorTest extends LightCodeInsightFixtu
 		StagemonitorCompletionProvider stagemonitorCompletionProvider = new StagemonitorCompletionProvider();
 		List<StagemonitorCompletionProvider.ConfigurationOptionDescription> optionDescriptionList = stagemonitorCompletionProvider.searchConfigurationOptions(configurationClass);
 		assertSize(1, optionDescriptionList);
-		assertEquals("When set to true, a markdown processor is used to convert the markdown in  an article text to HTML. somethingsome  thingsomething", optionDescriptionList.get(0).getDescription());
-		assertEquals("article.text.useMarkdownProcessor", optionDescriptionList.get(0).getKey());
-
+		final StagemonitorCompletionProvider.ConfigurationOptionDescription option = optionDescriptionList.get(0);
+		assertEquals("When set to true, a markdown processor is used to convert the markdown in  an article text to HTML. somethingsome  thingsomething", option.getDescription());
+		assertEquals("article.text.useMarkdownProcessor", option.getKey());
+		assertEquals("Use Markdown Processor", option.getLabel());
 	}
 
 
